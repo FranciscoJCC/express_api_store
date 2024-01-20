@@ -16,15 +16,16 @@ router.get('/filter', (req, res) => {
   res.send("Soy estatico");
 })
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
 
-  const { id } = req.params;
-  const product = await service.findOne(id);
-
-  if(product)
+  try {
+    const { id } = req.params;
+    const product = await service.findOne(id);
     res.status(200).json(product);
-  else
-    res.status(404).json({ message : "product not found"})
+  } catch (error) {
+    next(error);
+  }
+
 });
 
 //Crear un producto
