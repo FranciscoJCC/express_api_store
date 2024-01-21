@@ -1,6 +1,6 @@
 const express = require('express');
 const routerApi = require('./routes');
-const { logErrors, errorHandler } = require('./middlewares/error.handler');
+const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/error.handler');
 const app = express();
 const port = 3000;
 
@@ -14,6 +14,7 @@ routerApi(app);
 //Los midddleware se declaran desdpues del routerApi
 //El orden es secuencial
 app.use(logErrors);
+app.use(boomErrorHandler);
 app.use(errorHandler);
 
 //Ruta del servidor

@@ -29,18 +29,23 @@ router.get("/:id", async (req, res, next) => {
 });
 
 //Crear un producto
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
   const body = req.body;
   const newProduct = await service.create(body);
 
-  res.status(201).json({
-    message: 'created',
-    data: newProduct
-  });
+  try {
+    res.status(201).json({
+      message: 'created',
+      data: newProduct
+    });
+  } catch (error) {
+    next(error);
+  }
+
 });
 
 //Actualizar un producto
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', async (req, res, next) => {
 
   try {
     const { id } = req.params;
@@ -51,20 +56,22 @@ router.patch('/:id', async (req, res) => {
     res.json(product);
 
   } catch (error) {
-    res.status(404).json({ message: error.message})
+    next(error);
   }
 
 });
 
 //Eliminar un producto
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req, res, next) => {
 
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
+    const product = await service.delete(id);
 
-  const product = await service.delete(id);
-
-  res.json(product);
-
+    res.json(product);
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;
