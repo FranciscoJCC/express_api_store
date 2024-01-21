@@ -1,9 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-const routerApi = require('./routes');
+const routerApi = require('./routes/index');
 const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/error.handler');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 
 //middleware para recibir datos
@@ -35,9 +35,9 @@ app.use(boomErrorHandler);
 app.use(errorHandler);
 
 //Ruta del servidor
-/* app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
   res.send("Hola mi server en Express");
-}); */
+});
 
 
 //Levantamos el puerto
