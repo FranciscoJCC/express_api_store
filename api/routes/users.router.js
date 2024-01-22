@@ -1,17 +1,19 @@
 const express = require('express');
+const UserService = require('../services/users.service');
+//Validator
+const validatorHandler = require('./../middlewares/validatorHandler');
+const { createUserSchema, updateUserSchema, getUserSchema } = require('./../schemas/user.schema');
 
 const router = express.Router();
+const service = new UserService();
 
-router.get('/', (req, res) => {
-  const { limit, offset } = req.query;
+router.get('/', async (req, res, next) => {
+  try {
+    const users = await service.find();
 
-  if(limit && offset){
-    res.json({
-      limit,
-      offset
-    })
-  }else{
-    res.send('No hay parametros');
+    res.json(users);
+  } catch (error) {
+    next(error);
   }
 })
 
