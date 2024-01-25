@@ -18,7 +18,7 @@ class UserService {
   //List users
   async find(){
 
-    const response = await models.User.findAll();
+    const response = await models.User.findAll({include:['customer']});
 
     //const response = await pool.query(query);
     /* console.log('response');*/

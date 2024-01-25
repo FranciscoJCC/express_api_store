@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-//Definimos datos
+//Definimos datos para validaciones
 const id = Joi.string().uuid();
 const name = Joi.string().min(3).max(30);
 const price = Joi.number().integer().min(10);
