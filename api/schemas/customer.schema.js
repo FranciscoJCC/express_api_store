@@ -29,4 +29,8 @@ const udpateCustomerSchema = Joi.object({
   user: updateUserSchema
 });
 
-module.exports = { getCustomerSchema, createCustomerSchema, udpateCustomerSchema }
+const deleteCustomerSchema = Joi.object({
+  id: id.required()
+});
+
+module.exports = { getCustomerSchema, createCustomerSchema, udpateCustomerSchema, deleteCustomerSchema }
