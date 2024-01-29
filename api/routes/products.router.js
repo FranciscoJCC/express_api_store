@@ -1,21 +1,25 @@
 const express = require('express');
 const ProductsService = require("../services/product.service");
 const validatorHandler = require("../middlewares/validatorHandler");
-const { createProductSchema, updateProductSchema, getProductSchema, deleteProductSchema } = require("../schemas/product.schema");
+const { createProductSchema, updateProductSchema, getProductSchema, deleteProductSchema, queryProductSchema } = require("../schemas/product.schema");
 
 const router = express.Router();
 
 const service = new ProductsService();
 
-router.get("/", async (req, res, next) => {
-  try {
-    const products = await service.find();
+router.get("/",
+  validatorHandler(queryProductSchema, 'query'),
+  async (req, res, next) => {
+    try {
+      const queryOptions = req.query;
+      const products = await service.find(queryOptions);
 
-    res.status(200).json(products);
-  } catch (error) {
-    next(error);
+      res.status(200).json(products);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 //Primero metodos estaticos, luego dinamicos
 /* router.get('/filter', (req, res) => {

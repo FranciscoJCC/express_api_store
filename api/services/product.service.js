@@ -32,11 +32,20 @@ class ProductsService {
     return newProduct;
   }
 
-  async find() {
+  async find(queryOptions) {
 
-    const products = await models.Product.findAll({
-      include: ['category']
-    });
+    const options = {
+      include: ['category'],
+    }
+
+    const { limit, offset } = queryOptions;
+
+    if(limit && offset){
+      options.limit = limit;
+      options.offset = offset;
+    }
+
+    const products = await models.Product.findAll(options);
 
     //metadata tiene mas informacion sobre la consulta
     return products
