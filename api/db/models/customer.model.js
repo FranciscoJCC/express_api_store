@@ -52,6 +52,11 @@ class Customer extends Model {
   static associate(models){
     //relaciones, tiene un user, pero la relacion se carga a customer
     this.belongsTo(models.User, { as: 'user' });
+    //Un cliente puede tener muchas ordenes
+    this.hasMany(models.Order, {
+      as: 'orders',
+      foreignKey: 'customerId'
+    });
   }
 
   static config(sequelize){
