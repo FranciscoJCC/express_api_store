@@ -11,7 +11,11 @@ class UserService {
 
   //Create user
   async create(data){
+
     const newUser = await models.User.create(data);
+
+    delete newUser.dataValues.password;
+
     return newUser;
   }
 

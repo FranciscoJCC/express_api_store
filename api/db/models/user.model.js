@@ -1,4 +1,5 @@
 const { Model, DataTypes, Sequelize } = require('sequelize');
+const bcrypt = require('bcrypt');
 
 //Tabla de la bdd
 const USER_TABLE = 'users';
@@ -47,9 +48,25 @@ class User extends Model {
       sequelize,
       tableName: USER_TABLE,
       modelName: 'User',
-      timestamps: false
+      timestamps: false,
+      hooks: {
+        beforeCreate: async (user) => {
+          const password = await bcrypt.hash(user.password, 10 );
+          user.password = password;
+        }
+      },
+      defaultScope: {
+        attributes: { exclude: ['password'] },
+      },
+      scopes: {
+        allProperties: {
+          attributes: ['id', 'email', 'role', 'password']
+        }
+      },
     }
   }
+
 }
+
 
 module.exports = { USER_TABLE, UserSchema, User }
