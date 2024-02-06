@@ -30,6 +30,14 @@ class UserService {
     return response;
   }
 
+  async findByEmail(email){
+    const user = await models.User.scope('allProperties').findOne({
+      where: { email }
+    });
+
+    return user;
+  }
+
   async findOne(id){
 
     const user = await models.User.findByPk(id);

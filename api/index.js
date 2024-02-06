@@ -24,7 +24,10 @@ const options = {
     }
   }
 }
-app.use(cors(options))
+app.use(cors(options));
+
+//Auth
+require('./utils/auth');
 
 app.get('/new', checkApiKey, (req, res) => {
   res.send("Nueva ruta permitida");
