@@ -7,8 +7,23 @@ class OrderService {
 
   }
 
-  async create(data){
-    const newOrder = await models.Order.create(data);
+  async create(userId){
+    console.log("ID",userId);
+    const customer = await models.Customer.findOne({
+      where: {
+        '$user.id$': userId
+      },
+      include: ['user']
+    });
+
+    console.log("customer", customer);
+
+    if(!customer)
+      throw boom.notFound('Customer not found');
+
+
+    const newOrder = await models.Order.create({ customerId: customer.id});
+
     return newOrder;
   }
 
