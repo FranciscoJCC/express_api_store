@@ -3,9 +3,11 @@ const boom = require('@hapi/boom');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const UserService = require('./users.service');
+const MailService = require('./mail.service');
 const { config } = require('./../config/config');
 
 const service = new UserService();
+const mailService = new MailService();
 
 class AuthService {
   async getUser(email, password){
@@ -38,12 +40,36 @@ class AuthService {
     }
   }
 
-  async sendEmail(email){
-
+  async sendRecovery(email){
     const user = await service.findByEmail(email);
 
     if(!user)
       throw boom.unauthorized();
+
+
+    //Generamos un token
+    const payload = { sub: user.id };
+    const token = jwt.sign(payload, config.jwSecret, { expiresIn: '15min'});
+    const link = `http://myfrontend.com/recovery?token=${token}`;
+
+    //Guardamos el token en la bdd
+    await service.update(user.id, { recoveryToken: token});
+
+    const mail = {
+      from: '"Recuperación de cuenta 👻" <fjccandelario@gmail.com>', // sender address
+      to: `${user.email}`, // list of receivers
+      subject: "Recuperación de contraseña", // Subject line
+      //text: "Hello world?", // plain text body
+      html: `<b>Ingresa a este link para recuperar tu contraseña: ${link}</b>`, // html body
+    }
+
+    //const response = await this.sendEmail(mail);
+    const response = await mailService.sendEmail(mail);
+
+    return response;
+  }
+
+ /*  async sendEmail(infoEmail){
 
     //Config mail
     const transporter = nodemailer.createTransport({
@@ -58,16 +84,10 @@ class AuthService {
     });
 
 
-    await transporter.sendMail({
-      from: '"Recuperación de cuenta 👻" <fjccandelario@gmail.com>', // sender address
-      to: `${user.email}`, // list of receivers
-      subject: "Hello ✔", // Subject line
-      text: "Hello world?", // plain text body
-      html: "<b>Hello world?</b>", // html body
-    });
+    await transporter.sendMail(infoEmail);
 
     return { message: 'mail sent'};
-  }
+  } */
 }
 
 module.exports = AuthService;

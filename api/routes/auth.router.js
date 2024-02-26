@@ -1,6 +1,5 @@
 const express = require('express');
 const passport = require('passport');
-const jwt = require('jsonwebtoken');
 const validatorHandler = require('./../middlewares/validatorHandler');
 const { recoverySchema } = require('./../schemas/auth.schema');
 const AuthService = require('./../services/auth.service');
@@ -27,7 +26,7 @@ router.post('/recovery',
     try {
       const { email } = req.body;
 
-      const response = await service.sendEmail(email);
+      const response = await service.sendRecovery(email);
 
       res.status(200).json(response);
     } catch (error) {
