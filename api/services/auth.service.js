@@ -69,6 +69,30 @@ class AuthService {
     return response;
   }
 
+  async changePassword(token, password){
+    try {
+      //Verificamos el token
+      const payload = jwt.verify(token, config.jwSecret);
+      //información del usuario
+      const user = await service.findOne(payload.sub);
+
+      //Si el token no coincide, retornamos el error
+      if(user.recoveryToken !== token)
+        throw boom.unauthorized();
+
+      //hash de la contraseña
+      const hash = await bcrypt.hash(password, 10);
+
+      //Actualizamos el usuario
+      await service.update(user.id, { recoveryToken: null, password: hash});
+
+      return { message: 'password changed'};
+
+    } catch (error) {
+      throw boom.unauthorized();
+    }
+  }
+
  /*  async sendEmail(infoEmail){
 
     //Config mail
